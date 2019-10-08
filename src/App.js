@@ -3,6 +3,12 @@ import Title from "./Components/Title";
 import MessageList from "./Components/MessageList";
 import SendMessageForm from "./Components/SendMessageForm";
 
+const instanceLocator = "v1:us1:30315f18-d9da-432e-9138-32860a7ff023";
+const testToken =
+  "https://us1.pusherplatform.io/services/chatkit_token_provider/v1/30315f18-d9da-432e-9138-32860a7ff023/token";
+const username = "perborgen";
+const roomId = "f1b16e89-367d-4c75-918b-f0f2e8ebcb2f";
+
 const DUMMY_DATA = [
   {
     senderId: "perborgen",
@@ -22,6 +28,31 @@ export class App extends Component {
       messages: DUMMY_DATA
     };
   }
+
+  componentDidMount() {
+    const chatManager = new Chatkit.ChatManager({
+      instanceLocator: instanceLocator,
+      userId: "janedoe",
+      tokenProvider: new Chatkit.TokenProvider({
+        url: testToken
+      })
+    });
+
+    chatManager.connect().then(currentUser => {
+      this.currentUser = currentUser;
+      this.currentUser.subscribeToRoom({
+        roomId: roomId,
+        hooks: {
+          onNewMessage: message => {
+            this.setState({
+              messages: [...this.state.messages, message]
+            });
+          }
+        }
+      });
+    });
+  }
+
   render() {
     return (
       <div className="app">
