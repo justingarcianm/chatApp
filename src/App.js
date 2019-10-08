@@ -26,7 +26,7 @@ export class App extends Component {
     return (
       <div className="app">
         <Title />
-        <MessageList messaeges={this.state.messages} />
+        <MessageList messages={this.state.messages} />
         <SendMessageForm />
       </div>
     );
